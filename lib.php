@@ -62,6 +62,15 @@ class gradingform_random_controller extends gradingform_controller {
     }
 
     /**
+     * @see parent:extend_settings_navigation()
+     */
+    public function extend_settings_navigation(settings_navigation $settingsnav, navigation_node $node=null) {
+        $node->add(get_string('defineform', 'gradingform_random'),
+            new moodle_url('/grade/grading/form/random/edit.php', array('area' => $this->areaid)), settings_navigation::TYPE_CUSTOM,
+                null, null, new pix_icon('icon', '', 'gradingform_random'));
+    }
+
+    /**
      * @see parent::get_method_name()
      */
     protected function get_method_name() {

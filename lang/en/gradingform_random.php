@@ -24,4 +24,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['defineform'] = 'Define grading form';
 $string['pluginname'] = 'Random grade';
