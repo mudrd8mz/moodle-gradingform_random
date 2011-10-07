@@ -35,16 +35,21 @@ class gradingform_random_controller extends gradingform_controller {
 
     /**
      * @see parent::make_grading_widget()
+     * @return gradingform_random_grading_widget
      */
-    public function make_grading_widget($raterid, $itemid, $bulk = false) {
+    public function make_grading_widget($raterid, $itemid, array $options) {
 
         if ($this->pagefinalized) {
             throw new coding_exception('You are attempting to make a new grading widget but the target grading page has been already finalized.');
         }
 
-        $widget = new gradingform_random_widget("I'm feeling lucky");
+        $instance = $this->prepare_instance($raterid, $itemid);
 
-        if (!$bulk) {
+        $widget = new gradingform_random_grading_widget($this, $options, $instance, "I'm feeling lucky");
+
+        $this->widgets[$widget->id] = $widget;
+
+        if (empty($options['bulk'])) {
             $this->finalize_page();
         }
 
@@ -53,6 +58,9 @@ class gradingform_random_controller extends gradingform_controller {
 
     /**
      * Makes sure that required YUI module is loaded at the page
+     *
+     * We have the list of made widgets available in $this->widgets in case we need their
+     * properties.
      *
      * @see parent::finalize_page()
      */
@@ -66,8 +74,9 @@ class gradingform_random_controller extends gradingform_controller {
      */
     public function extend_settings_navigation(settings_navigation $settingsnav, navigation_node $node=null) {
         $node->add(get_string('defineform', 'gradingform_random'),
-            new moodle_url('/grade/grading/form/random/edit.php', array('area' => $this->areaid)), settings_navigation::TYPE_CUSTOM,
-                null, null, new pix_icon('icon', '', 'gradingform_random'));
+            new moodle_url('/grade/grading/form/random/edit.php', array('areaid' => $this->areaid)),
+            settings_navigation::TYPE_CUSTOM,
+            null, null, new pix_icon('icon', '', 'gradingform_random'));
     }
 
     /**
@@ -76,6 +85,7 @@ class gradingform_random_controller extends gradingform_controller {
     protected function get_method_name() {
         return 'random';
     }
+
 }
 
 
@@ -85,19 +95,18 @@ class gradingform_random_controller extends gradingform_controller {
  * The instance of this class should provide all information needed to render the grading
  * widget.
  */
-class gradingform_random_widget extends gradingform_widget {
-
-    /** @var string unique identifier */
-    public $id;
+class gradingform_random_grading_widget extends gradingform_grading_widget {
 
     /** @var string the text on the button */
     public $buttonlabel;
 
     /**
+     * @see parent::__construct()
      * @param string $buttonlabel the text on the button
      */
-    public function __construct($buttonlabel) {
-        $this->id = uniqid('gradingform_random_widgetid_');
+    public function __construct(gradingform_controller $controller, array $options, stdClass $instance, $buttonlabel) {
+
+        parent::__construct($controller, $options, $instance);
         $this->buttonlabel = $buttonlabel;
     }
 }

@@ -49,6 +49,7 @@ YUI.add('moodle-gradingform_random-grading', function(Y) {
             var button = e.currentTarget;
             var wrapper = button.get('parentNode');
             var label = wrapper.one('span');
+            var instanceid = wrapper.one('input[type="hidden"]').get('value');
             var anim = new Y.Anim({
                 node: label,
                 from: { opacity: 0 },
@@ -59,7 +60,7 @@ YUI.add('moodle-gradingform_random-grading', function(Y) {
             var ajaxurl = M.cfg.wwwroot + '/grade/grading/form/random/process.php';
             var ajaxcfg = {
                 method : 'POST',
-                data : { 'instance' : 36 },
+                data : { 'instance' : instanceid },
                 context : this,
                 on : {
                     start: function(transid, args) {

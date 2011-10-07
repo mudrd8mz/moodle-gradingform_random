@@ -32,14 +32,25 @@ class gradingform_random_renderer extends gradingform_renderer {
     /**
      * Renders grading widget
      *
-     * @param gradingform_random_widget $widget
+     * @param gradingform_random_grading_widget $widget
      * @return string HTML
      */
-    protected function render_gradingform_random_widget(gradingform_random_widget $widget) {
+    protected function render_gradingform_random_grading_widget(gradingform_random_grading_widget $widget) {
 
         $button  = html_writer::tag('button', 'Loading ...', array('type' => 'button', 'value' => $widget->buttonlabel));
+        $hidden  = html_writer::empty_tag('input', array('type' => 'hidden', 'name' => $widget->id.'_instanceid', 'value' => $widget->instance->id));
         $span    = html_writer::tag('span', '');
 
-        return $this->output->container($button.$span, 'gradingform_random-widget-wrapper', $widget->id);
+        return $this->output->container($button.$hidden.$span, 'gradingform_random-widget-wrapper', $widget->id);
+    }
+
+    /**
+     * Renders editor widget
+     *
+     * @param gradingform_random_editor_widget $widget
+     * @return string HTML
+     */
+    protected function render_gradingform_random_editor_widget(gradingform_random_editor_widget $widget) {
+        return var_export($widget, true);
     }
 }
